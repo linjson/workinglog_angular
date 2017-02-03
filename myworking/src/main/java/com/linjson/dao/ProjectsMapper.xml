@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.linjson.dao.ProjectsMapper">
+
+	<select id="selectProject"  resultType="hashmap">
+		select id,projectname,date_format(modifytime,'%Y-%m-%d %H:%i') modifytime,date_format(createtime,'%Y-%m-%d %H:%i') createtime,
+			(select sum(worktime) from working a where a.pid=b.id) workcount
+		 from projects b
+		<if test="key!=null and key!=''">
+			where projectname like CONCAT('%',#{key},'%') or id=#{key}
+		</if>
+		
+	</select>
+	
+	<select id="selectProjectById"  resultType="hashmap">
+		select id,projectname,date_format(modifytime,'%Y-%m-%d %H:%i') modifytime,date_format(createtime,'%Y-%m-%d %H:%i') createtime,
+			(select sum(worktime) from working a where a.pid=b.id) workcount
+		 from projects b
+		<if test="key!=null and key!=''">
+			where id=#{key}
+		</if>
+		
+	</select>
+
+
+	<select id="findPerson"  resultType="integer">
+		select count(1) c from person where name=#{name}
+	</select>
+
+	<insert id="addPerson">
+		insert into person
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			date,
+			<if test="name != null">
+				name,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="number != null">
+				number,
+			</if>
+
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			SYSDATE(),
+
+			<if test="name != null">
+				#{name},
+			</if>
+			<if test="phone != null">
+				#{phone},
+			</if>
+			<if test="content != null">
+				#{content},
+			</if>
+			<if test="number != null">
+				#{number},
+			</if>
+		</trim>
+	</insert>
+
+	<select id="getAllPerson" resultType="hashmap">
+		select name,phone,content,number,DATE_FORMAT(date, '%Y-%m-%d') date from person order by date desc,number desc
+	</select>
+
+
+</mapper>

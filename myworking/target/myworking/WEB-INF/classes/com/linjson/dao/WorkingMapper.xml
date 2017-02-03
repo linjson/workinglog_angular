@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.linjson.dao.WorkingMapper">
+
+
+
+
+	<select id="selectWorkingList" resultType="hashmap">
+		SELECT
+		id,pid,content,date_format(createtime,'%Y-%m-%d') createtime,
+		worktime,worktype from
+		working where pid=#{pid} order by createtime
+		desc limit
+		${pageindex},${pagesize}
+	</select>
+
+	<select id="selectWorkingCount" resultType="integer">
+		SELECT
+		count(1) from
+		working where pid=#{pid}
+	</select>
+
+	<select id="countWeek" resultType="hashmap">
+		SELECT
+		sum(worktime)
+		workcount,date_format(createtime,'%u') data
+		FROM
+		working b where
+		date_format(createtime,'%u')=date_format(now(),'%u')
+	</select>
+
+	<select id="countMonth" resultType="hashmap">
+		SELECT
+		sum(worktime)
+		workcount,date_format(createtime,'%m') data
+		FROM
+		working b where
+		date_format(createtime,'%m')=date_format(now(),'%m')
+	</select>
+
+	<select id="countAll" resultType="hashmap">
+		SELECT
+		sum(worktime) workcount
+		FROM
+		working b
+	</select>
+
+	<insert id="addWorking" parameterType="hashmap">
+		insert into working
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null">
+				pid,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="createtime != null">
+				createtime,
+			</if>
+			<if test="worktime != null">
+				worktime,
+			</if>
+			<if test="worktype != null">
+				worktype,
+			</if>
+
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null">
+				#{pid},
+			</if>
+			<if test="content != null">
+				#{content},
+			</if>
+			<if test="createtime != null">
+				#{createtime},
+			</if>
+			<if test="worktime != null">
+				#{worktime},
+			</if>
+			<if test="worktype != null">
+				#{worktype},
+			</if>
+		</trim>
+
+	</insert>
+
+	<update id="updateWorking">
+	
+		update working set
+		
+		
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="content != null">
+				content=#{content},
+			</if>
+			<if test="createtime != null">
+				createtime=#{createtime},
+			</if>
+			<if test="worktime != null">
+				worktime=#{worktime},
+			</if>
+			<if test="worktype != null">
+				worktype=#{worktype},
+			</if>
+
+
+		</trim>
+		where id=#{id}
+	
+	</update>
+	
+	<delete id="deleteWorking">
+		delete from working where id=#{id}
+	</delete>
+
+</mapper>
